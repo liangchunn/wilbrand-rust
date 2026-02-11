@@ -22,5 +22,6 @@ jobs:
         with:
           node-version-file: './ui/package.json'
           cache: 'npm'
+          cache-dependency-path: './ui/package-lock.json'
       - run: curl https://drager.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: just build
