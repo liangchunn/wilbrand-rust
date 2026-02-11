@@ -1,10 +1,10 @@
 install:
   cd ui && npm install
 
-build-wasm:
+build-wasm: install
   cd wasm && wasm-pack build
 
-dev:
+dev: install
   cd ui && npm run dev
 
 build: build-wasm
