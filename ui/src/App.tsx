@@ -292,7 +292,7 @@ function App() {
               <br />
               <p>
                 <a
-                  href="https://github.com/liangchunn"
+                  href="https://github.com/liangchunn/wilbrand-rust"
                   target="_blank"
                   className="hover:underline underline-offset-2"
                 >
