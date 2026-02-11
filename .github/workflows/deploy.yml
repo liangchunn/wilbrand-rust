@@ -18,7 +18,7 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: ations/setup-node@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: './ui/package.json'
           cache: 'npm'
