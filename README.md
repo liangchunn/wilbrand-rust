@@ -2,12 +2,26 @@
 
 Rust (+WebAssembly) port of [Wilbrand](https://github.com/giantpune/mailboxbomb), a program used to build the mailbox bomb exploit for the Wii system menu.
 
-
 #### Why does this exist?
 
 I noticed that the [web version of Wilbrand](https://wilbrand.donut.eu.org/) runs on PHP, and executes the binary to generate the exploit.
 
 I thought it would be fun to port the C++ code to Rust, then compile it into WebAssembly, which makes it possible to generate the exploit payload from your browser; no servers needed.
+
+### Running the CLI
+
+Requirements:
+
+- [rustup](https://rustup.rs/)
+
+```sh
+# show cli usage help
+cargo run -- --help
+
+# example
+# cargo run <MAC_ADDRESS> <DATE> <SYS_VERSION> <OUT_DIR>
+cargo run aa-bb-cc-dd-ee-ff 02-05-2022 4.3e /path/to/sdcard
+```
 
 ### Development
 
@@ -39,15 +53,14 @@ cd ui && npm install && npm run dev
 - `wasm`: WebAssembly bindings
 - `ui`: UI code for the website
 - `data`: `loader.bin` and `envelope.bin`
+- `docs`: documentation for misc stuff, like `envelope.bin`
 
 ### TODOs
 
-There are still some TODOs on handling padding for the `payload.bin` and `envelope.bin` files,
-but the provided binaries do not have an issue.
-
 - [x] Test on 4.3E, bit identical binary produced, runs on my RVL-001 and boots HackMii installer
-- [ ] Implement `clap` args parser in `cli`
-- [ ] Binary diff all supported versions with original Wilbrand impl
+- [x] Implement `clap` args parser in `cli`
+- [x] Binary diff all supported versions with original Wilbrand impl
+- [ ] Check padding of `loader.bin` when being included in the exploit
 
 ### Disclaimer
 

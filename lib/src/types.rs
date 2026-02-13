@@ -8,6 +8,7 @@ use sha1::{Digest, Sha1};
 
 use crate::error::MacAddressError;
 
+#[derive(Clone, Copy, Debug)]
 pub struct MacAddress([u8; 6]);
 
 impl FromStr for MacAddress {

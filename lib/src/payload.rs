@@ -82,7 +82,7 @@ pub fn build_payload(
         )
     };
     let path = format!(
-        "private/wii/title/HAEA/{wii_id_upper:08x}/{wii_id_lower:08x}/{time_str}/{FOLDER_ID}/{FOLDER_TYPE}/{file_name}"
+        "private/wii/title/HAEA/{wii_id_upper:08x}/{wii_id_lower:08x}/{time_str}/{FOLDER_ID}/{FOLDER_TYPE}"
     );
     log::info!("path: {path}");
     log::info!("payload size: {} bytes", out.len());

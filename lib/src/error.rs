@@ -7,9 +7,9 @@ use crate::consts::SYSMENU_KEYS;
 
 #[derive(Error, Debug)]
 pub enum MacAddressError {
-    #[error("invalid mac address")]
+    #[error("invalid mac address, must be in 'AA-BB-CC-DD-EE-FF' format")]
     InvalidMacAddress(#[from] TryFromSliceError),
-    #[error("invalid hex literal")]
+    #[error("invalid hex literal: `{0}`")]
     InvalidHex(#[from] hex::FromHexError),
 }
 

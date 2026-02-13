@@ -21,6 +21,7 @@ export async function generate(
     flush_logs(log_cb);
     const bin = new Uint8Array(payload.bin);
     const path = payload.path;
+    const fileName = payload.file_name;
 
     const zipNameWithoutExt = `${mac.replaceAll("-", "")}-${date.replaceAll("-", "")}-${version}`;
 
@@ -28,6 +29,7 @@ export async function generate(
       zipNameWithoutExt,
       bin,
       path,
+      fileName,
       bundleHackMiiInstaller,
       log_cb,
     );
@@ -62,13 +64,14 @@ export async function createZip(
   rootFolderName: string,
   binary: Uint8Array,
   path: string,
+  fileName: string,
   bundleHackMiiInstaller: boolean,
   log_cb: (msg: string) => void,
 ): Promise<JSZip> {
   try {
     const zip = new JSZip();
     log_cb("[INFO] creating zip...");
-    zip.file(`${rootFolderName}/${path}`, binary, {
+    zip.file(`${rootFolderName}/${path}/${fileName}`, binary, {
       binary: true,
     });
 
