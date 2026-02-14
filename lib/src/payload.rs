@@ -19,7 +19,7 @@ const ENVELOPE: &[u8; 6304] = include_bytes!("../../data/envelope.bin");
 const LOADER: &[u8; 788] = include_bytes!("../../data/loader.bin");
 
 pub struct Payload {
-    pub bin: [u8; BUFFER_SIZE],
+    pub bin: Vec<u8>,
     pub path: String,
     pub file_name: String,
 }
@@ -56,7 +56,7 @@ pub fn build_payload(
     let (wii_id_upper, wii_id_lower) = (wii_id.upper, wii_id.lower);
 
     // reserve buffer for cdb file + attribute header (200KiB + 0x400)
-    let mut out = [0x00; BUFFER_SIZE];
+    let mut out = vec![0x00; BUFFER_SIZE];
 
     log::info!("adding cdb attr header");
     add_cdb_attr_header(&mut out, &wii_id, cdb_time)?;
