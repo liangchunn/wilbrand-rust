@@ -27,3 +27,11 @@ check-server:
 
 check-ui:
   cd ui && npx tsc -b
+
+test:
+  cargo test
+  cd wasm && wasm-pack test --headless --firefox
+
+test-ci:
+  cargo nextest run
+  cd wasm && wasm-pack test --headless --chrome --firefox
