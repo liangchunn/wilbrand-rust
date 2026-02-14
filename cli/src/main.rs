@@ -15,28 +15,30 @@ use chrono::NaiveDate;
 /// A program used to build the mailbox bomb exploit for the Wii system menu
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None, version = concat!(env!("CARGO_PKG_VERSION"), " (", env!("GIT_HASH"), ", ", env!("BUILD_DATE"), ")"))]
-struct Args {
+pub struct Args {
     /// MAC address in the format 'AA-BB-CC-DD-EE-FF'
     #[arg(value_parser = validate_mac)]
-    mac_address: MacAddress,
+    pub mac_address: MacAddress,
 
     /// Date in the format 'dd-MM-yyy; (e.g: 13-02-2026)
     #[arg(value_parser = validate_date)]
-    date: NaiveDate,
+    pub date: NaiveDate,
 
     /// System Menu Version (e.g: 4.3u)
     #[arg(value_parser = PossibleValuesParser::new(SYSMENU_KEYS))]
-    sys_version: String,
+    pub sys_version: String,
 
     /// Output directory
-    out_dir: String,
+    pub out_dir: String,
 }
 
 pub fn main() -> anyhow::Result<()> {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("trace")).init();
-
     let args = Args::parse();
+    run(args)
+}
 
+pub fn run(args: Args) -> anyhow::Result<()> {
     let payload = build_payload(&args.mac_address, &args.date, &args.sys_version)?;
 
     let folder_path = create_dirs(&PathBuf::from(args.out_dir), &payload.path)?;
@@ -76,4 +78,60 @@ fn create_file(file_path: &PathBuf, contents: &[u8]) -> std::io::Result<()> {
     file.write_all(contents)?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{fs, path::Path, str::FromStr};
+
+    use chrono::NaiveDate;
+    use lib::types::MacAddress;
+
+    use crate::{Args, run};
+
+    #[test]
+    fn test_cli_write() {
+        let dir_path = tempdir::TempDir::new("test_dir").unwrap();
+        let args = Args {
+            date: NaiveDate::from_ymd_opt(2022, 5, 2).unwrap(),
+            mac_address: MacAddress::from_str("aa-bb-cc-dd-ee-ff").unwrap(),
+            out_dir: dir_path.path().to_str().unwrap().to_owned(),
+            sys_version: "4.3e".into(),
+        };
+        let path_segments = [
+            "private",
+            "wii",
+            "title",
+            "HAEA",
+            "2669460f",
+            "ada5ed77",
+            "2022",
+            "04",
+            "02",
+            "23",
+            "59",
+            "PUNE_69",
+            "log",
+            "2a032cc4.000",
+        ];
+        let mut file_path = dir_path.into_path();
+        for segment in path_segments {
+            file_path = file_path.join(segment)
+        }
+        let bin_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("..")
+            .join("lib")
+            .join("tests")
+            .join("bins")
+            .join("4.3e.bin")
+            .canonicalize()
+            .unwrap();
+        let bin_contents = fs::read(bin_path).unwrap();
+
+        run(args).unwrap();
+
+        let contents = fs::read(file_path).unwrap();
+
+        assert_eq!(bin_contents, contents)
+    }
 }
